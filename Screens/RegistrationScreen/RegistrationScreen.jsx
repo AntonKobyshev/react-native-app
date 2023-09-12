@@ -22,6 +22,10 @@ export const RegistrationScreen = () => {
     setState({ ...state, [name]: value });
   };
 
+  const [isNameFocused, setNameFocused] = useState(false);
+  const [isEmailFocused, setEmailFocused] = useState(false);
+  const [isPasswordFocused, setPasswordFocused] = useState(false);
+
   return (
     <ImageBackground
       source={require("./../../images/bgImg.jpg")}
@@ -33,7 +37,7 @@ export const RegistrationScreen = () => {
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-85}
+        keyboardVerticalOffset={-125}
         style={styles.registerContainer}
       >
         <View style={styles.imageContainer}>
@@ -54,41 +58,62 @@ export const RegistrationScreen = () => {
           </View>
         </View>
 
-        <Text style={styles.authTitle}>Registrations</Text>
+        <Text style={styles.authTitle}>Реєстрація</Text>
         <View style={{ position: "relative", gap: 16 }}>
           <TextInput
             value={state["name"]}
-            placeholder="Name"
+            placeholder="Логін"
             onChangeText={(value) => handleChange("name", value)}
-            style={styles.input}
+            style={[
+              styles.input,
+              isNameFocused
+                ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
+                : null,
+            ]}
+            onFocus={() => setNameFocused(true)}
+            onBlur={() => setNameFocused(false)}
           />
           <TextInput
             keyboardType="email-address"
             value={state["email"]}
-            placeholder="Email"
+            placeholder="Адреса електронної пошти"
             onChangeText={(value) => handleChange("email", value)}
-            style={styles.input}
+            style={[
+              styles.input,
+              isEmailFocused
+                ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
+                : null,
+            ]}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
           />
           <View>
             <TextInput
               secureTextEntry={true}
               value={state["password"]}
               onChangeText={(value) => handleChange("password", value)}
-              placeholder="Password"
-              style={styles.input}
+              placeholder="Пароль"
+              style={[
+                styles.input,
+                isPasswordFocused
+                  ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
+                  : null,
+              ]}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
             />
             <TouchableOpacity style={styles.buttonShow}>
-              <Text style={styles.authLink}>Show</Text>
+              <Text style={styles.authLink}>Показати</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>Зареєструватися</Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Text style={styles.authLink}>Already have an account? Sign in</Text>
+          <Text style={styles.authLink}>Вже є аккаунт? Увійти</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -119,7 +144,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#212121",
     fontSize: 30,
-    fontWeight: "normal",
+    fontWeight: "bold",
     letterSpacing: 0.3,
   },
   input: {
