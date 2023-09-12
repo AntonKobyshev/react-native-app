@@ -8,7 +8,7 @@ export const PostsScreen = () => (
         borderBottomWidth: 1,
       }}
     >
-      <Text style={styles.title}>Publications</Text>
+      <Text style={styles.title}>Публікації</Text>
     </View>
   </View>
 );
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     textAlign: "center",
     fontSize: 17,
-    fontWeight: "normal",
+    fontWeight: "bold",
     lineHeight: 22,
     letterSpacing: -0.408,
   },

@@ -19,6 +19,9 @@ export const LoginScreen = () => {
     setState({ ...state, [name]: value });
   };
 
+  const [isEmailFocused, setEmailFocused] = useState(false);
+  const [isPasswordFocused, setPasswordFocused] = useState(false);
+
   return (
     <ImageBackground
       source={require("./../../images/bgImg.jpg")}
@@ -30,17 +33,24 @@ export const LoginScreen = () => {
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-20}
+        keyboardVerticalOffset={-60}
         style={styles.loginContainer}
       >
-        <Text style={styles.authTitle}>Sign in</Text>
+        <Text style={styles.authTitle}>Увійти</Text>
         <View style={{ gap: 16 }}>
           <TextInput
             keyboardType="email-address"
             value={state["email"]}
             onChangeText={(value) => handleChange("email", value)}
-            placeholder="Email"
-            style={styles.input}
+            placeholder="Адреса електронної пошти"
+            style={[
+              styles.input,
+              isEmailFocused
+                ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
+                : null,
+            ]}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
           />
           <View>
             <TextInput
@@ -48,20 +58,27 @@ export const LoginScreen = () => {
               value={state["password"]}
               onChangeText={(value) => handleChange("password", value)}
               placeholder="Password"
-              style={styles.input}
+              style={[
+                styles.input,
+                isPasswordFocused
+                  ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
+                  : null,
+              ]}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
             />
             <TouchableOpacity style={styles.buttonShow}>
-              <Text style={styles.authLink}>Show</Text>
+              <Text style={styles.authLink}>Показати</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Sign in</Text>
+          <Text style={styles.buttonText}>Увійти</Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Text style={styles.authLink}>Don't have an account? Sign up</Text>
+          <Text style={styles.authLink}>Немає акаунту? Зареєструватися</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -84,7 +101,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#212121",
     fontSize: 30,
-    fontWeight: "normal",
+    fontWeight: "bold",
     letterSpacing: 0.3,
   },
   input: {
