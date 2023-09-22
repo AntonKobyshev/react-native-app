@@ -24,7 +24,6 @@ export const RegistrationScreen = () => {
   const handleChange = (name, value) => {
     setState({ ...state, [name]: value });
   };
-
   const handleSubmit = (state) => {
     if (state.name && isEmail(state.email) && state.password) {
       return console.log(state);
@@ -97,6 +96,7 @@ export const RegistrationScreen = () => {
         </KeyboardAvoidingView>
       </ImageBackground>
     </TouchableWithoutFeedback>
+
   );
 };
 
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#212121",
     fontSize: 30,
-    fontWeight: "normal",
+    fontWeight: "bold",
     letterSpacing: 0.3,
   },
   formWrapper: { gap: 16 },

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     textAlign: "center",
     fontSize: 17,
-    fontWeight: "normal",
+    fontWeight: "bold",
     lineHeight: 22,
     letterSpacing: -0.408,
   },
