@@ -2,18 +2,17 @@ import { StyleSheet, View, Text } from "react-native";
 
 export const PostsScreen = () => (
   <View>
-    <View
-      style={{
-        marginTop: 16,
-        borderBottomWidth: 1,
-      }}
-    >
-      <Text style={styles.title}>Публікації</Text>
+    <View style={styles.postContent}>
+      <Text style={styles.title}>Publications</Text>
     </View>
   </View>
 );
 
 const styles = StyleSheet.create({
+  postContent: {
+    marginTop: 16,
+    borderBottomWidth: 1,
+  },
   title: {
     paddingTop: 11,
     paddingBottom: 11,

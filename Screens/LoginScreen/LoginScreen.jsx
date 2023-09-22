@@ -1,4 +1,5 @@
 import { useState } from "react";
+import isEmail from "validator/lib/isEmail";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -7,6 +8,8 @@ import {
   TouchableOpacity,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 
 export const LoginScreen = () => {
@@ -14,78 +17,76 @@ export const LoginScreen = () => {
     email: "",
     password: "",
   });
+  const [isHiddenPassword, setHiddenPassword] = useState(true);
 
   const handleChange = (name, value) => {
     setState({ ...state, [name]: value });
   };
-
-  const [isEmailFocused, setEmailFocused] = useState(false);
-  const [isPasswordFocused, setPasswordFocused] = useState(false);
+  const handleSubmit = () => {
+    if (isEmail(state.email) && state.password) {
+      return console.log(state);
+    }
+    return console.log("The email or password is incorrect");
+  };
 
   return (
-    <ImageBackground
-      source={require("./../../images/bgImg.jpg")}
-      resizeMode="cover"
-      style={{
-        flex: 1,
-        justifyContent: "flex-end",
-      }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-60}
-        style={styles.loginContainer}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <ImageBackground
+        source={require("./../../assets/images/bgImg.jpg")}
+        resizeMode="cover"
+        style={styles.backgroundImg}
       >
-        <Text style={styles.authTitle}>Увійти</Text>
-        <View style={{ gap: 16 }}>
-          <TextInput
-            keyboardType="email-address"
-            value={state["email"]}
-            onChangeText={(value) => handleChange("email", value)}
-            placeholder="Адреса електронної пошти"
-            style={[
-              styles.input,
-              isEmailFocused
-                ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
-                : null,
-            ]}
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-          />
-          <View>
-            <TextInput
-              secureTextEntry={true}
-              value={state["password"]}
-              onChangeText={(value) => handleChange("password", value)}
-              placeholder="Password"
-              style={[
-                styles.input,
-                isPasswordFocused
-                  ? { backgroundColor: "#FFF", borderColor: "#FF6C00" }
-                  : null,
-              ]}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
-            />
-            <TouchableOpacity style={styles.buttonShow}>
-              <Text style={styles.authLink}>Показати</Text>
+        <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-230}>
+          <View style={styles.loginContainer}>
+            <Text style={styles.authTitle}>Sign in</Text>
+            <View style={styles.formWrapper}>
+              <TextInput
+                keyboardType="email-address"
+                value={state["email"]}
+                onChangeText={(value) => handleChange("email", value)}
+                placeholder="Email"
+                style={styles.input}
+              />
+              <View>
+                <TextInput
+                  secureTextEntry={isHiddenPassword}
+                  value={state["password"]}
+                  onChangeText={(value) => handleChange("password", value)}
+                  placeholder="Password"
+                  maxLength={20}
+                  style={styles.input}
+                />
+                <TouchableOpacity
+                  style={styles.buttonShow}
+                  onPress={() => setHiddenPassword(!isHiddenPassword)}
+                >
+                  <Text style={styles.authLink}>Show</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => handleSubmit()}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>Sign in</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Text style={styles.authLink}>
+                Don't have an account? Sign up
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Увійти</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.authLink}>Немає акаунту? Зареєструватися</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImg: { flex: 1, justifyContent: "flex-end" },
   loginContainer: {
     position: "relative",
     alignItems: "center",
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 0.3,
   },
+  formWrapper: { gap: 16 },
   input: {
     padding: 16,
     width: 343,
