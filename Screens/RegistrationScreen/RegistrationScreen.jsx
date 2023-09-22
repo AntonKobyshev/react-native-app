@@ -1,6 +1,9 @@
 import { useState } from "react";
+import isEmail from "validator/lib/isEmail";
 import {
   StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   View,
   Image,
@@ -8,7 +11,6 @@ import {
   TouchableOpacity,
   Text,
   TextInput,
-  Platform,
 } from "react-native";
 
 export const RegistrationScreen = () => {
@@ -17,85 +19,89 @@ export const RegistrationScreen = () => {
     email: "",
     password: "",
   });
+  const [isHiddenPassword, setHiddenPassword] = useState(true);
 
   const handleChange = (name, value) => {
     setState({ ...state, [name]: value });
   };
 
+  const handleSubmit = (state) => {
+    if (state.name && isEmail(state.email) && state.password) {
+      return console.log(state);
+    }
+    return console.log("Please enter all fields correctly");
+  };
+
   return (
-    <ImageBackground
-      source={require("./../../images/bgImg.jpg")}
-      resizeMode="cover"
-      style={{
-        flex: 1,
-        justifyContent: "flex-end",
-      }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-85}
-        style={styles.registerContainer}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <ImageBackground
+        source={require("./../../assets/images/bgImg.jpg")}
+        resizeMode="cover"
+        style={styles.backgroundImg}
       >
-        <View style={styles.imageContainer}>
-          <View style={{ position: "relative", width: "100%", height: "100%" }}>
-            <Image />
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                bottom: 14,
-                right: -12.5,
-              }}
-            >
-              <Image
-                source={require("./../../assets/icons/add.png")}
-                style={{ backgroundColor: "transparent" }}
+        <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-170}>
+          <View style={styles.registerContainer}>
+            <View style={styles.avatarContainer}>
+              <Image />
+              <TouchableOpacity style={styles.avatarButtons}>
+                <Image source={require("./../../assets/icons/add.png")} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.authTitle}>Registration</Text>
+            <View style={styles.formWrapper}>
+              <TextInput
+                value={state["name"]}
+                placeholder="Name"
+                onChangeText={(value) => handleChange("name", value)}
+                style={styles.input}
               />
+              <TextInput
+                keyboardType="email-address"
+                value={state["email"]}
+                placeholder="Email"
+                onChangeText={(value) => handleChange("email", value)}
+                style={styles.input}
+              />
+              <View>
+                <TextInput
+                  secureTextEntry={isHiddenPassword}
+                  value={state["password"]}
+                  onChangeText={(value) => handleChange("password", value)}
+                  placeholder="Password"
+                  maxLength={20}
+                  style={styles.input}
+                />
+                <TouchableOpacity
+                  style={styles.buttonShow}
+                  onPress={() => setHiddenPassword(!isHiddenPassword)}
+                >
+                  <Text style={styles.authLink}>Show</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => handleSubmit(state)}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Text style={(styles.authLink, styles.inputPass)}>
+                Already have an account? Sign in
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        <Text style={styles.authTitle}>Registrations</Text>
-        <View style={{ position: "relative", gap: 16 }}>
-          <TextInput
-            value={state["name"]}
-            placeholder="Name"
-            onChangeText={(value) => handleChange("name", value)}
-            style={styles.input}
-          />
-          <TextInput
-            keyboardType="email-address"
-            value={state["email"]}
-            placeholder="Email"
-            onChangeText={(value) => handleChange("email", value)}
-            style={styles.input}
-          />
-          <View>
-            <TextInput
-              secureTextEntry={true}
-              value={state["password"]}
-              onChangeText={(value) => handleChange("password", value)}
-              placeholder="Password"
-              style={styles.input}
-            />
-            <TouchableOpacity style={styles.buttonShow}>
-              <Text style={styles.authLink}>Show</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.authLink}>Already have an account? Sign in</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </ImageBackground>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImg: { flex: 1, justifyContent: "flex-end" },
   registerContainer: {
     position: "relative",
     alignItems: "center",
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-  imageContainer: {
+  avatarContainer: {
     position: "absolute",
     top: -60,
     width: 120,
@@ -114,6 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
+  avatarButtons: { position: "absolute", bottom: 14, right: -12.5 },
   authTitle: {
     marginBottom: 33,
     textAlign: "center",
@@ -122,6 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     letterSpacing: 0.3,
   },
+  formWrapper: { gap: 16 },
   input: {
     padding: 16,
     width: 343,
