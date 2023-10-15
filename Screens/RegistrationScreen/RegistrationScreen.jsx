@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import isEmail from "validator/lib/isEmail";
 import {
   StyleSheet,
@@ -20,12 +21,24 @@ export const RegistrationScreen = () => {
     password: "",
   });
   const [isHiddenPassword, setHiddenPassword] = useState(true);
-
+  const [isFocused, setFocused] = useState({
+    name: false,
+    email: false,
+    password: false,
+  });
+  const navigation = useNavigation();
+  
   const handleChange = (name, value) => {
     setState({ ...state, [name]: value });
   };
+
+  const handleFocus = (name, value) => {
+    setFocused({ [name]: value });
+  };
+
   const handleSubmit = (state) => {
     if (state.name && isEmail(state.email) && state.password) {
+      navigation.navigate("Home");
       return console.log(state);
     }
     return console.log("Please enter all fields correctly");
@@ -43,7 +56,10 @@ export const RegistrationScreen = () => {
             <View style={styles.avatarContainer}>
               <Image />
               <TouchableOpacity style={styles.avatarButtons}>
-                <Image source={require("./../../assets/icons/add.png")} />
+                <Image
+                  source={require("./../../assets/icons/add.png")}
+                  style={styles.avatarIcon}
+                />
               </TouchableOpacity>
             </View>
 
@@ -53,14 +69,21 @@ export const RegistrationScreen = () => {
                 value={state["name"]}
                 placeholder="Name"
                 onChangeText={(value) => handleChange("name", value)}
-                style={styles.input}
+                onFocus={() => handleFocus("name", true)}
+                onBlur={() => handleFocus("name", false)}
+                style={[styles.input, isFocused["name"] && styles.inputFocused]}
               />
               <TextInput
                 keyboardType="email-address"
                 value={state["email"]}
                 placeholder="Email"
                 onChangeText={(value) => handleChange("email", value)}
-                style={styles.input}
+                onFocus={() => handleFocus("email", true)}
+                onBlur={() => handleFocus("email", false)}
+                style={[
+                  styles.input,
+                  isFocused["email"] && styles.inputFocused,
+                ]}
               />
               <View>
                 <TextInput
@@ -69,7 +92,12 @@ export const RegistrationScreen = () => {
                   onChangeText={(value) => handleChange("password", value)}
                   placeholder="Password"
                   maxLength={20}
-                  style={styles.input}
+                  onFocus={() => handleFocus("password", true)}
+                  onBlur={() => handleFocus("password", false)}
+                  style={[
+                    styles.input,
+                    isFocused["password"] && styles.inputFocused,
+                  ]}
                 />
                 <TouchableOpacity
                   style={styles.buttonShow}
@@ -87,8 +115,8 @@ export const RegistrationScreen = () => {
               <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
-              <Text style={(styles.authLink, styles.inputPass)}>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.authLink}>
                 Already have an account? Sign in
               </Text>
             </TouchableOpacity>
@@ -96,7 +124,6 @@ export const RegistrationScreen = () => {
         </KeyboardAvoidingView>
       </ImageBackground>
     </TouchableWithoutFeedback>
-
   );
 };
 
@@ -139,6 +166,7 @@ const styles = StyleSheet.create({
     borderColor: "#E8E8E8",
     borderRadius: 10,
   },
+  inputFocused: { borderColor: "#FF6C00", backgroundColor: "#FFFFFF" },
   button: {
     justifyContent: "center",
     alignItems: "center",

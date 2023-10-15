@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import isEmail from "validator/lib/isEmail";
 import {
   StyleSheet,
@@ -18,12 +19,23 @@ export const LoginScreen = () => {
     password: "",
   });
   const [isHiddenPassword, setHiddenPassword] = useState(true);
-
+  const [isFocused, setFocused] = useState({
+    email: false,
+    password: false,
+  });
+  const navigation = useNavigation();
+  
   const handleChange = (name, value) => {
     setState({ ...state, [name]: value });
   };
+
+    const handleFocus = (name, value) => {
+    setFocused({ [name]: value });
+  };
+
   const handleSubmit = () => {
     if (isEmail(state.email) && state.password) {
+      navigation.navigate("Home");
       return console.log(state);
     }
     return console.log("The email or password is incorrect");
@@ -45,7 +57,12 @@ export const LoginScreen = () => {
                 value={state["email"]}
                 onChangeText={(value) => handleChange("email", value)}
                 placeholder="Email"
-                style={styles.input}
+                 onFocus={() => handleFocus("email", true)}
+                onBlur={() => handleFocus("email", false)}
+                style={[
+                  styles.input,
+                  isFocused["email"] && styles.inputFocused,
+                ]}
               />
               <View>
                 <TextInput
@@ -54,7 +71,12 @@ export const LoginScreen = () => {
                   onChangeText={(value) => handleChange("password", value)}
                   placeholder="Password"
                   maxLength={20}
-                  style={styles.input}
+                  onFocus={() => handleFocus("password", true)}
+                  onBlur={() => handleFocus("password", false)}
+                  style={[
+                    styles.input,
+                    isFocused["password"] && styles.inputFocused,
+                  ]}
                 />
                 <TouchableOpacity
                   style={styles.buttonShow}
@@ -72,7 +94,9 @@ export const LoginScreen = () => {
               <Text style={styles.buttonText}>Sign in</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={() => navigation.navigate("Registration")}
+            >
               <Text style={styles.authLink}>
                 Don't have an account? Sign up
               </Text>
@@ -81,7 +105,6 @@ export const LoginScreen = () => {
         </KeyboardAvoidingView>
       </ImageBackground>
     </TouchableWithoutFeedback>
-
   );
 };
 
@@ -115,6 +138,7 @@ const styles = StyleSheet.create({
     borderColor: "#E8E8E8",
     borderRadius: 10,
   },
+  inputFocused: { borderColor: "#FF6C00", backgroundColor: "#FFFFFF" },
   button: {
     justifyContent: "center",
     alignItems: "center",
